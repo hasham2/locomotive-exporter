@@ -53,7 +53,6 @@ describe Locomotive::Exporter::ContentTypes do
       Locomotive::Exporter::AssetCollections.process(@context,@options)
 
       @asset_collection.asset_custom_fields.each do |field|
-        debugger
         @context[:database]['site']['asset_collections'][@asset_collection.name]['fields'][@asset_collection.send(field.label)].should_not be_empty
       end
     end

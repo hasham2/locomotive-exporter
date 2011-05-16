@@ -4,7 +4,7 @@ module Locomotive
 
     class Base
       
-      include Logger
+      include Locomotive::Exporter::Logger
       
       attr_reader :site, :options
       
@@ -21,11 +21,7 @@ module Locomotive
       def process
         raise 'this method has to be overidden'
       end
-      
-      def log(message)
-        super(message,self.class.name.demodulize.underscore)
-      end
-      
+
       protected
       
       def site
