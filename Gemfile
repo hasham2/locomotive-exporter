@@ -1,6 +1,6 @@
 source :rubygems
 
-group :developmen, :test do
+group :development, :test do
   gem 'mongoid', '2.0.0.rc.7'
   gem 'locomotive_cms',  :git => 'git://github.com/locomotivecms/engine.git', :require => 'locomotive/engine'
   gem 'rspec'
