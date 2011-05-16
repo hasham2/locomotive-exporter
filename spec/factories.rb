@@ -103,6 +103,11 @@ Factory.define :asset_collection do |s|
   s.asset_custom_fields [{ :label => "city", :kind => "string" }, { :label => "people", :kind => "text"}]
 end
 
+# Assets
+Factory.define :asset do |a|
+  a.name { Faker::Lorem.words(4).to_sentence }
+end
+
 
 ## Content types ##
 Factory.define :content_type do |t|

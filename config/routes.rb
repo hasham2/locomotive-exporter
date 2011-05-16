@@ -1,3 +1,5 @@
 LocomotiveExporter::Application.routes.draw do
-  match 'admin/exports/new' => 'admin/exports#new'
+  namespace :admin do
+    resources :exports, :only => [ :new ]
+  end
 end
