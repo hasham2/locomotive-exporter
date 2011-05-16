@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Export::ContentTypes do
+describe Locomotive::Exporter::ContentTypes do
   
   before :each do
     @site = Factory(:site)
@@ -20,19 +20,19 @@ describe Locomotive::Export::ContentTypes do
   context 'standard asset collection hash' do
     
     it 'should define an asset collections hash' do
-      Locomotive::Export::AssetCollections.process(@context,@options)
+      Locomotive::Exporter::AssetCollections.process(@context,@options)
 
       @context[:database]['site']['asset_collections'].should_not be_empty
     end
     
     it 'should define a specific asset collection hash' do
-      Locomotive::Export::AssetCollections.process(@context,@options)
+      Locomotive::Exporter::AssetCollections.process(@context,@options)
       
       @context[:database]['site']['asset_collections'][@asset_collection.name].should_not be_empty
     end
     
     it 'should define the following asset_collection default attributes' do
-      Locomotive::Export::AssetCollections.process(@context,@options)
+      Locomotive::Exporter::AssetCollections.process(@context,@options)
       
       %w(slug).each do |method|
         @context[:database]['site']['asset_collections'][@asset_collection.name][method].should == @asset_collection.send(method)
@@ -44,13 +44,13 @@ describe Locomotive::Export::ContentTypes do
   context 'asset collection custom fields hash' do
 
     it 'should define a fields hash in each asset collection' do
-      Locomotive::Export::AssetCollections.process(@context,@options)
+      Locomotive::Exporter::AssetCollections.process(@context,@options)
 
       @context[:database]['site']['asset_collections'][@asset_collection.name]['fields'].should_not be_empty
     end
 
     it 'should assign the each field within the hash' do
-      Locomotive::Export::AssetCollections.process(@context,@options)
+      Locomotive::Exporter::AssetCollections.process(@context,@options)
 
       @asset_collection.asset_custom_fields.each do |field|
         debugger
@@ -67,7 +67,7 @@ describe Locomotive::Export::ContentTypes do
     #   end
       
     #   it 'should return a hash of the content instances' do
-    #     Locomotive::Export::ContentTypes.process(@context,@options)
+    #     Locomotive::Exporter::ContentTypes.process(@context,@options)
         
     #     @context[:database]['site']['content_types'][@content_type.name]['contents'].should be_an_instance_of(Array)
     #     @context[:database]['site']['content_types'][@content_type.name]['contents'][0].should be_an_instance_of(Hash)
@@ -75,7 +75,7 @@ describe Locomotive::Export::ContentTypes do
       
     #   it 'should have a hash for each content_type name by their slug' do
     #     field = @content_type.content_custom_fields.first
-    #     Locomotive::Export::ContentTypes.process(@context,@options)
+    #     Locomotive::Exporter::ContentTypes.process(@context,@options)
         
     #     @context[:database]['site']['content_types'][@content_type.name]['contents'][0][@content._slug.humanize].should be_an_instance_of(Hash)
     #   end
@@ -84,7 +84,7 @@ describe Locomotive::Export::ContentTypes do
         
     #     it 'should output the attributes of the content' do
     #       field = @content_type.content_custom_fields.first
-    #       Locomotive::Export::ContentTypes.process(@context,@options)
+    #       Locomotive::Exporter::ContentTypes.process(@context,@options)
           
     #       @context[:database]['site']['content_types'][@content_type.name]['contents'][0][@content._slug.humanize]['email'].should == @content.email
     #     end
@@ -107,7 +107,7 @@ describe Locomotive::Export::ContentTypes do
     #     @content.stubs(:_slug).returns("some_content")
     #     @content.stubs(:aliased_attributes).returns({ "email" => "email@email.com", "photo" => "/sites/test/5k.png"})
     #     ContentType.any_instance.stubs(:contents).returns([@content])
-    #     Locomotive::Export::ContentTypes.process(@context,@options)
+    #     Locomotive::Exporter::ContentTypes.process(@context,@options)
         
     #     File.exists?(@template).should be_true
     #     File.readable?(@template).should be_true

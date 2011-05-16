@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Export::Site do
+describe Locomotive::Exporter::Site do
   
   before :each do
     @site = Factory(:site)
@@ -18,7 +18,7 @@ describe Locomotive::Export::Site do
   context 'site database hash' do
   
     it 'should define the following attributes' do
-      Locomotive::Export::Site.process(@context,@options)
+      Locomotive::Exporter::Site.process(@context,@options)
       
       @context[:database]['site']['name'].should == @site.name
       @context[:database]['site']['meta_keywords'].should == @site.meta_keywords
@@ -26,7 +26,7 @@ describe Locomotive::Export::Site do
     end
     
     it 'should not define any more' do
-      Locomotive::Export::Site.process(@context,@options)
+      Locomotive::Exporter::Site.process(@context,@options)
       
       @context[:database]['site'].size.should === 3
     end
