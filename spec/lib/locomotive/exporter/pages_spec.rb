@@ -19,7 +19,7 @@ describe Locomotive::Exporter::Pages do
   context 'page database hash' do
     
     before :each do
-      Locomotive::Exporter::Pages.any_instance.stubs(:export_template).returns(true)
+      mock.instance_of(Locomotive::Exporter::Pages).export_template.times(any_times) { true }
     end
     
     it 'should define a pages hash' do
@@ -54,7 +54,7 @@ describe Locomotive::Exporter::Pages do
     end
     
     it 'should replace content_type_template with template in the slug' do
-      Page.any_instance.stubs(:fullpath).returns("content_type_template")
+      mock.instance_of(Page).fullpath.times(any_times) { 'content_type_template' }
       
       Locomotive::Exporter::Pages.process(@context,@options)
       
@@ -64,7 +64,7 @@ describe Locomotive::Exporter::Pages do
     it 'should define the content_type on templatized pages' do
       @content_type = Factory.build(:content_type)
       @site.pages.first.update_attributes!(:templatized => true, :content_type => @content_type)
-      Page.any_instance.stubs(:content_type).returns(@content_type)
+      mock.instance_of(Page).content_type.times(any_times) { @content_type }
 
       Locomotive::Exporter::Pages.process(@context,@options)
       

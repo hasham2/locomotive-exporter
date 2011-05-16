@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Exporter::ContentTypes do
+describe Locomotive::Exporter::AssetCollections do
   
   before :each do
     @site = Factory(:site)

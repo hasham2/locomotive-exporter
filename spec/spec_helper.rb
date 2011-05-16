@@ -6,7 +6,7 @@ require 'rspec/rails'
 # Require support files
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-Rspec.configure do |config|
+RSpec.configure do |config|
 
   config.mock_with :rr
 

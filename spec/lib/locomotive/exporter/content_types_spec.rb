@@ -44,21 +44,21 @@ describe Locomotive::Exporter::ContentTypes do
       context 'order_by' do
         
         it 'should use created_at if none is set' do
-          @content_type.stubs(:order_by).returns(nil)
+          stub(@content_type).order_by { nil }
           Locomotive::Exporter::ContentTypes.process(@context,@options)
           
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should == 'created_at'
         end
         
         it 'should use the human name on a custom field' do
-          @content_type.stubs(:order_by).returns('custom_field_1')
+          stub(@content_type).order_by { 'custom_field_1' }
           Locomotive::Exporter::ContentTypes.process(@context,@options)
           
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should == 'email'
         end
         
         it 'should not send any order_by if set to _position_in_list' do
-          @content_type.stubs(:order_by).returns('_position_in_list')
+          stub(@content_type).order_by { '_position_in_list' }
           Locomotive::Exporter::ContentTypes.process(@context,@options)
           
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should be_nil
@@ -70,7 +70,7 @@ describe Locomotive::Exporter::ContentTypes do
         
         it 'should use the human name' do
           field = @content_type.content_custom_fields.first
-          @content_type.stubs(:highlighted_field).returns(field)
+          stub(@content_type).highlighted_field { field }
           Locomotive::Exporter::ContentTypes.process(@context,@options)
           
           @context[:database]['site']['content_types'][@content_type.name]['highlighted_field_name'].should == field._alias
@@ -147,16 +147,16 @@ describe Locomotive::Exporter::ContentTypes do
       
       it 'should create content assets' do
         FileUtils.mkdir_p("#{Rails.root}/public/sites/test")
-        FileUtils.cp("#{Rails.root}/spec/fixtures/assets/5k.png","#{Rails.root}/public/sites/test/5k.png")
+        FileUtils.cp("#{Rails.root}/spec/support/assets/5k.png","#{Rails.root}/public/sites/test/5k.png")
         
         @template = File.join(Rails.root,'tmp','themes',@site.id.to_s,"public","samples",@content_type.name,"5k.png")
         
         File.exists?(@template).should be_false
         
         @content = ContentInstance.new
-        @content.stubs(:_slug).returns("some_content")
-        @content.stubs(:aliased_attributes).returns({ "email" => "email@email.com", "photo" => "/sites/test/5k.png"})
-        ContentType.any_instance.stubs(:contents).returns([@content])
+        stub(@content)._slug { 'some_content' }
+        stub(@content).aliased_attributes { { "email" => "email@email.com", "photo" => "/sites/test/5k.png" } }
+        mock.instance_of(ContentType).contents { [ @content ] }
         Locomotive::Exporter::ContentTypes.process(@context,@options)
         
         File.exists?(@template).should be_true

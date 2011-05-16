@@ -2,7 +2,7 @@ module Locomotive
   module Exporter
     class Job
       
-      include Logger
+      include Locomotive::Exporter::Logger
       
       def initialize(site, options = {})
         @site = site

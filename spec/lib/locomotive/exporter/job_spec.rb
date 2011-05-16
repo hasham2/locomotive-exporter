@@ -17,7 +17,8 @@ describe Locomotive::Exporter::Job do
   describe 'database' do
     before :each do
       # Don't destroy working directory
-      Locomotive::Exporter::Job.any_instance.stubs(:remove_working_folder).returns(true)
+      mock.instance_of(Locomotive::Exporter::Job).remove_working_folder.times(2) { true }
+      # stub
     end
     it 'should create the database.yml file' do
       @database = File.join(Rails.root,'tmp','themes',@site_name,'database.yml')
@@ -35,7 +36,7 @@ describe Locomotive::Exporter::Job do
   describe 'templates' do
     before :each do
       # Don't destroy working directory
-      Locomotive::Exporter::Job.any_instance.stubs(:remove_working_folder).returns(true)
+      mock.instance_of(Locomotive::Exporter::Job).remove_working_folder.times(2) { true }
       
       @directory = File.join(Rails.root,'tmp','themes',@site_name,'templates')
       File.exists?(@directory).should be_false
