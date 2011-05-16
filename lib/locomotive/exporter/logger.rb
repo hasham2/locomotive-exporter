@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     module Logger
       
       def log(message, domain = '')

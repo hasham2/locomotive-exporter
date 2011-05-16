@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     class AssetCollections < Base
       def process
         @hash = { 'asset_collections' => {} }

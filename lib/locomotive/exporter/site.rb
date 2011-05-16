@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     class Site < Base
       
       def process

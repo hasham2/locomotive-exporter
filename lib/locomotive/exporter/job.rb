@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     class Job
       
       include Logger
@@ -29,10 +29,10 @@ module Locomotive
         }
         
         %w(site pages content_types snippets assets asset_collections).each do |step|
-          # Export These
+          # Exporter These
           if @options[:enabled][step] != false
             self.log("*** Actioning: #{step} ***")
-            "Locomotive::Export::#{step.camelize}".constantize.process(context, @options)
+            "Locomotive::Exporter::#{step.camelize}".constantize.process(context, @options)
           else
             self.log "skipping #{step}"
           end

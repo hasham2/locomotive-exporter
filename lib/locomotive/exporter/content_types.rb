@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     class ContentTypes < Base
       
       def process

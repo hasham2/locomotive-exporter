@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     class Snippets < Base
       
       def process

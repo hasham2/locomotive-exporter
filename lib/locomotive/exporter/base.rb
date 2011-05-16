@@ -1,5 +1,5 @@
 module Locomotive
-  module Export
+  module Exporter
     require 'fileutils'
 
     class Base
@@ -57,7 +57,7 @@ module Locomotive
               end 
             end
           else
-            ::Locomotive::Logger.info "\t [Locomotive Export: File `#{url}` was not a valid export]"
+            ::Locomotive::Logger.info "\t [Locomotive Exporter: File `#{url}` was not a valid export]"
           end
         else
           directory = FileUtils.mkdir_p(File.join(theme_path,'public',*dir))
