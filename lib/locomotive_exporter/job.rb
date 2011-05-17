@@ -30,7 +30,7 @@ module LocomotiveExporter
         # Exporter These
         if @options[:enabled][step] != false
           self.log("*** Actioning: #{step} ***")
-          "LocomotiveExporter::#{step.camelize}".constantize.process(context, @options)
+          "LocomotiveExporter::Task::#{step.camelize}".constantize.process(context, @options)
         else
           self.log "skipping #{step}"
         end

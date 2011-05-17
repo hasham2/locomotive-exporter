@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LocomotiveExporter::ContentTypes do
+describe LocomotiveExporter::Task::ContentTypes do
 
   before :each do
     @site = Factory(:site)
@@ -20,19 +20,19 @@ describe LocomotiveExporter::ContentTypes do
   context 'page database hash' do
 
     it 'should define a pages hash' do
-      LocomotiveExporter::ContentTypes.process(@context,@options)
+      LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
       @context[:database]['site']['content_types'].should_not be_empty
     end
 
     it 'should define next pages hashes' do
-      LocomotiveExporter::ContentTypes.process(@context,@options)
+      LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
       @context[:database]['site']['content_types'][@content_type.name].should_not be_empty
     end
 
     it 'should define the following content_type default attributes' do
-      LocomotiveExporter::ContentTypes.process(@context,@options)
+      LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
       %w(slug name description api_enabled).each do |method|
         @context[:database]['site']['content_types'][@content_type.name][method].should == @content_type.send(method)
@@ -45,21 +45,21 @@ describe LocomotiveExporter::ContentTypes do
 
         it 'should use created_at if none is set' do
           stub(@content_type).order_by { nil }
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should == 'created_at'
         end
 
         it 'should use the human name on a custom field' do
           stub(@content_type).order_by { 'custom_field_1' }
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should == 'email'
         end
 
         it 'should not send any order_by if set to _position_in_list' do
           stub(@content_type).order_by { '_position_in_list' }
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['order_by'].should be_nil
         end
@@ -71,7 +71,7 @@ describe LocomotiveExporter::ContentTypes do
         it 'should use the human name' do
           field = @content_type.content_custom_fields.first
           stub(@content_type).highlighted_field { field }
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['highlighted_field_name'].should == field._alias
         end
@@ -83,7 +83,7 @@ describe LocomotiveExporter::ContentTypes do
     context 'custom fields' do
 
       it 'should return a hash of custom fields' do
-        LocomotiveExporter::ContentTypes.process(@context,@options)
+        LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
         @context[:database]['site']['content_types'][@content_type.name]['fields'].should be_an_instance_of(Array)
         @context[:database]['site']['content_types'][@content_type.name]['fields'][0].should be_an_instance_of(Hash)
@@ -91,7 +91,7 @@ describe LocomotiveExporter::ContentTypes do
 
       it 'should have a hash for each content_type name by their label' do
         field = @content_type.content_custom_fields.first
-        LocomotiveExporter::ContentTypes.process(@context,@options)
+        LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
         @context[:database]['site']['content_types'][@content_type.name]['fields'][0][field.label].should be_an_instance_of(Hash)
       end
@@ -100,7 +100,7 @@ describe LocomotiveExporter::ContentTypes do
 
         it 'should output the attributes of the field' do
           field = @content_type.content_custom_fields.first
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['fields'][0][field.label]['label'].should == field.label
           @context[:database]['site']['content_types'][@content_type.name]['fields'][0][field.label]['kind'].should == field.kind
@@ -117,7 +117,7 @@ describe LocomotiveExporter::ContentTypes do
       end
 
       it 'should return a hash of the content instances' do
-        LocomotiveExporter::ContentTypes.process(@context,@options)
+        LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
         @context[:database]['site']['content_types'][@content_type.name]['contents'].should be_an_instance_of(Array)
         @context[:database]['site']['content_types'][@content_type.name]['contents'][0].should be_an_instance_of(Hash)
@@ -125,7 +125,7 @@ describe LocomotiveExporter::ContentTypes do
 
       it 'should have a hash for each content_type name by their slug' do
         field = @content_type.content_custom_fields.first
-        LocomotiveExporter::ContentTypes.process(@context,@options)
+        LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
         @context[:database]['site']['content_types'][@content_type.name]['contents'][0][@content._slug.humanize].should be_an_instance_of(Hash)
       end
@@ -134,7 +134,7 @@ describe LocomotiveExporter::ContentTypes do
 
         it 'should output the attributes of the content' do
           field = @content_type.content_custom_fields.first
-          LocomotiveExporter::ContentTypes.process(@context,@options)
+          LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
           @context[:database]['site']['content_types'][@content_type.name]['contents'][0][@content._slug.humanize]['email'].should == @content.email
         end
@@ -157,7 +157,7 @@ describe LocomotiveExporter::ContentTypes do
         stub(@content)._slug { 'some_content' }
         stub(@content).aliased_attributes { { "email" => "email@email.com", "photo" => "/sites/test/5k.png" } }
         mock.instance_of(ContentType).contents { [ @content ] }
-        LocomotiveExporter::ContentTypes.process(@context,@options)
+        LocomotiveExporter::Task::ContentTypes.process(@context,@options)
 
         File.exists?(@template).should be_true
         File.readable?(@template).should be_true

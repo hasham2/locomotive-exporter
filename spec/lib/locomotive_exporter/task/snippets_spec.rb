@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LocomotiveExporter::Snippets do
+describe LocomotiveExporter::Task::Snippets do
 
   before :each do
     @site = Factory(:site)
@@ -24,7 +24,7 @@ describe LocomotiveExporter::Snippets do
 
       File.exists?(@template).should be_false
 
-      LocomotiveExporter::Snippets.process(@context,@options)
+      LocomotiveExporter::Task::Snippets.process(@context,@options)
 
       File.exists?(@template).should be_true
       File.readable?(@template).should be_true

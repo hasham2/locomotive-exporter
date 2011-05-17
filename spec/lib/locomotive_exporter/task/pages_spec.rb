@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LocomotiveExporter::Pages do
+describe LocomotiveExporter::Task::Pages do
 
   before :each do
     @site = Factory(:site)
@@ -19,25 +19,25 @@ describe LocomotiveExporter::Pages do
   context 'page database hash' do
 
     before :each do
-      mock.instance_of(LocomotiveExporter::Pages).export_template.times(any_times) { true }
+      mock.instance_of(LocomotiveExporter::Task::Pages).export_template.times(any_times) { true }
     end
 
     it 'should define a pages hash' do
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       @context[:database]['site']['pages'].should be_an_instance_of(Array)
       @context[:database]['site']['pages'][0].should be_an_instance_of(Hash)
     end
 
     it 'should define next pages hashes' do
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       @context[:database]['site']['pages'][0][@site.pages.first.fullpath].should be_an_instance_of(Hash)
       @context[:database]['site']['pages'][0][@site.pages.first.fullpath].should_not be_empty
     end
 
     it 'should define the following page attributes' do
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       page = @site.pages.first
       @context[:database]['site']['pages'][0][page.fullpath]['title'].should          == page.title
@@ -47,7 +47,7 @@ describe LocomotiveExporter::Pages do
     end
 
     it 'should not define any more page attributes' do
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       page = @site.pages.first
       @context[:database]['site']['pages'][0][page.fullpath].size.should === 6
@@ -56,7 +56,7 @@ describe LocomotiveExporter::Pages do
     it 'should replace content_type_template with template in the slug' do
       mock.instance_of(Page).fullpath.times(any_times) { 'content_type_template' }
 
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       @context[:database]['site']['pages'][0]["template"].should_not be_empty
     end
@@ -66,7 +66,7 @@ describe LocomotiveExporter::Pages do
       @site.pages.first.update_attributes!(:templatized => true, :content_type => @content_type)
       mock.instance_of(Page).content_type.times(any_times) { @content_type }
 
-      LocomotiveExporter::Pages.process(@context,@options)
+      LocomotiveExporter::Task::Pages.process(@context,@options)
 
       @context[:database]['site']['pages'][0]["content_type"].should == @content_type.slug
     end
@@ -80,7 +80,7 @@ describe LocomotiveExporter::Pages do
 
         File.exists?(@template).should be_false
 
-        LocomotiveExporter::Pages.process(@context,@options)
+        LocomotiveExporter::Task::Pages.process(@context,@options)
 
         File.exists?(@template).should be_true
         File.readable?(@template).should be_true

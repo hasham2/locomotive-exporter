@@ -1,6 +1,8 @@
 module LocomotiveExporter
   module Logger
 
+    require 'locomotive/logger'
+
     def log(message, domain = '')
       puts message
       head = "[export_theme]"
