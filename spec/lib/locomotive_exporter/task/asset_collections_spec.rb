@@ -6,7 +6,7 @@ describe LocomotiveExporter::Task::AssetCollections do
     @site = Factory(:site)
     @asset_collection = Factory(:asset_collection, :site => @site)
     @database = { 'site' => {} }
-    @theme_path = %{#{Rails.root}/tmp/themes/#{@site.id.to_s}}
+    @theme_path = Rails.root.join('tmp', 'themes', @site.id.to_s)
     @context = {
       :site       => @site,
       :database   => @database,

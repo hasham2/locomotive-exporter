@@ -1,64 +1,77 @@
 module LocomotiveExporter
   module Task
-    class AssetCollections < Base
-      def process
-        @hash = { 'asset_collections' => {} }
 
+    class AssetCollections < Base
+
+      # Processes all of the asset collections for the current site
+      # Inserts the output into the database store
+      # The output of the processing is formatted like so:
+      #
+      # asset_collections:
+      #   "Feature Sections":
+      #     slug: features
+      #     fields:
+      #       - slug:
+      #           kind: string
+      #       - description:
+      #           kind: string
+      #     assets:
+      #       - "Switchrooms":
+      #           slug: "switchrooms"
+      #           url: "/samples/banner-switchrooms.jpg"
+      #           description: "Lorem ipsum dolor sit amet"
+      #       - "Air Conditioning":
+      #           slug: "air_conditioning"
+      #           url: "/samples/banner-aircon.jpg"
+      #           description: "Lorem ipsum dolor sit amet"
+      #       - "Fire Services":
+      #           slug: "fire_services"
+      #           url: "/samples/banner-fire.jpg"
+      #           description: "Lorem ipsum dolor sit amet"
+
+      def process
+        asset_collections = {}
         site.asset_collections.each do |asset_collection|
-          @asset_collection = asset_collection
-          data_hash
+          unless ignored_collections.include?(asset_collection.name)
+            asset_collections[asset_collection.name] = asset_collection_attributes(asset_collection) 
+          end
         end
 
-        database.merge!(@hash)
+        database['asset_collections'] = asset_collections
       end
 
       protected
 
-      def data_hash
-        @hash['asset_collections'].merge!(asset_collection_hash)
+      def asset_collection_attributes(asset_collection)
+        { "fields" => collect_fields(asset_collection),
+          "assets" => collect_assets(asset_collection),
+          "slug" => asset_collection.slug }
       end
 
-      def asset_collection_hash
-        return {} if ignored_collections.include?(@asset_collection.name)
-
-        attributes = @asset_collection.attributes.to_hash
-
-        attributes.reject!{ |attribute,_| !%w(slug).include?(attribute) }
-
-        attributes.merge!({ 'fields' => asset_collection_fields_hash })
-        attributes.merge!({ 'assets' => asset_collection_assets_hash })
-
-        { @asset_collection.name => attributes.to_hash }
-      end
-
-      def asset_collection_fields_hash
-        attributes = {}
-
-        @asset_collection.asset_custom_fields.collect do |field|
-          attributes.merge!(field.label => {"kind"=>field.kind})
+      def collect_fields(asset_collection)
+        asset_collection.asset_custom_fields.map do |field|
+          { field.label => { "kind" => field.kind } }
         end
-
-        attributes
       end
 
-      def asset_collection_assets_hash
-        file_collection_name = @asset_collection.name.gsub("-"," ").parameterize("_")
-        folder = Rails.root.join('tmp', 'themes', (site.name.downcase.gsub(" ", "_").to_s), "public", "assets", file_collection_name)
+      def collect_assets(asset_collection)
+        file_collection_name = asset_collection.name.gsub("-"," ").parameterize("_")
+        folder = theme_path.join("public", "assets", file_collection_name)
         FileUtils.mkdir_p(folder)
-        assets = @asset_collection.assets.collect do |asset|
+
+        asset_collection.assets.map do |asset|
           FileUtils.cp asset.source.path, folder
-          name = asset.name
           source_filename = asset.source_filename
-          url = "/assets/#{file_collection_name}/#{source_filename}"
-          ret = {}
-          ret[name] = {"url"=>url}
-          ret
+
+          { asset.name => { "url" => "/assets/#{file_collection_name}/#{source_filename}" } }
         end
       end
 
       def ignored_collections
         [ 'system' ]
       end
+
     end
+
   end
 end
