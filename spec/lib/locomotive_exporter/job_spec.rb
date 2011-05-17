@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Locomotive::Exporter::Job do
-  
+describe LocomotiveExporter::Job do
+
   before :each do
     @site = Factory(:site)
     @site_name = @site.name.downcase.gsub(" ", "_")
@@ -13,34 +13,34 @@ describe Locomotive::Exporter::Job do
       :site_url   => "http://example.com"
     }
   end
-  
+
   describe 'database' do
     before :each do
       # Don't destroy working directory
-      mock.instance_of(Locomotive::Exporter::Job).remove_working_folder.times(2) { true }
+      mock.instance_of(LocomotiveExporter::Job).remove_working_folder.times(2) { true }
       # stub
     end
     it 'should create the database.yml file' do
       @database = File.join(Rails.root,'tmp','themes',@site_name,'database.yml')
-      
+
       File.exists?(@database).should be_false
-      
-      Locomotive::Exporter::Job.run!(@site,@options)
-      
+
+      LocomotiveExporter::Job.run!(@site,@options)
+
       File.exists?(@database).should be_true
       File.readable?(@database).should be_true
       File.size?(@database).should be_true
     end
   end
-  
+
   describe 'templates' do
     before :each do
       # Don't destroy working directory
-      mock.instance_of(Locomotive::Exporter::Job).remove_working_folder.times(2) { true }
-      
+      mock.instance_of(LocomotiveExporter::Job).remove_working_folder.times(2) { true }
+
       @directory = File.join(Rails.root,'tmp','themes',@site_name,'templates')
       File.exists?(@directory).should be_false
-      Locomotive::Exporter::Job.run!(@site,@options)
+      LocomotiveExporter::Job.run!(@site,@options)
     end
     it 'should create the directory' do
       File.exists?(@directory).should be_true
@@ -51,20 +51,20 @@ describe Locomotive::Exporter::Job do
       Dir[@directory].empty?.should be_false
     end
   end
-  
+
   describe 'zip' do
     before :each do
       @zip = File.join(Rails.root,'tmp','themes',"#{@site_name}.zip")
-      Locomotive::Exporter::Job.run!(@site,@options)
+      LocomotiveExporter::Job.run!(@site,@options)
     end
     it 'should create the zip' do
       File.exists?(@zip).should be_true
       File.readable?(@zip).should be_true
     end
   end
-  
+
   after :each do
     FileUtils.rm_r(File.join(Rails.root,'tmp','themes'),:force => true)
   end
-  
+
 end
