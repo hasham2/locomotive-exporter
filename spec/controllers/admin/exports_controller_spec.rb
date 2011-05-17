@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin::ExportsController do
 
-  before :all do
+  before :each do
     @site             = Site.first || Factory.create(:site)
     @page_one         = Factory.create(:page, :site => @site, :slug => 'first', :raw_template => '')
     @page_two         = Factory.create(:page, :site => @site, :slug => 'second', :raw_template => '')
@@ -12,49 +12,32 @@ describe Admin::ExportsController do
     @site.memberships.create!(:account => @account, :admin => true)
   end
 
-  after :all do
-    # Cleanup
-    @site.destroy
-    @page_one.destroy
-    @page_two.destroy
-  end
-
   describe '#new' do
 
     context 'when the user is logged in' do
 
       before :each do
+        stub(controller).current_site { @site }
         sign_in @account
       end
 
       context 'when exporting is successful' do
 
-        it 'should be a successful response' do
+        before :each do
           get :new
-          debugger
-          puts response.body.inspect
+        end
+
+        it 'should be a successful response' do
           response.should be_successful
         end
 
         it 'saves to a zip' do
-
+          File.should exist Rails.root.join('tmp', 'themes', 'acme_website.zip')
         end
 
-        it 'returns the zip to the browser'
-
-        it 'removes the zip'
-
-      end
-
-      context 'when exporting fails' do
-
-        it 'logs the error'
-
-        it 'logs the backtrace'
-
-        it 'displays an alert flash message'
-
-        it 'redirects to the admin home page'
+        it 'returns the zip to the browser' do
+          response.headers["Content-Disposition"].should include 'filename="Acme Website.zip"'
+        end
 
       end
 
@@ -63,6 +46,18 @@ describe Admin::ExportsController do
   end
 
   context 'when the user is not logged in' do
+
+    before :each do
+      get :new
+    end
+
+    it 'should redirect to the login url' do
+      response.should redirect_to new_admin_session_url
+    end
+
+    it 'should display a flash message to the user' do
+      flash[:alert].should == 'You need to sign in or sign up before continuing.'
+    end
 
   end
 

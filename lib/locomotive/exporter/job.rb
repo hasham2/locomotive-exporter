@@ -1,9 +1,9 @@
 module Locomotive
   module Exporter
     class Job
-      
+
       include Locomotive::Exporter::Logger
-      
+
       def initialize(site, options = {})
         @site = site
         @options = {
@@ -11,23 +11,22 @@ module Locomotive
            :enabled  => {},
          }.merge(options)
       end
-      
+
       def before(worker)
         @worker = worker
       end
-      
+
       def perform
         create_working_folder
-        create_database_hash
-        
+
         context = {
-          :database   => @database,
+          :database   => database,
           :site       => @site,
-          :theme_path => @theme_path,
+          :theme_path => theme_path,
           :error      => nil,
           :worker     => @worker
         }
-        
+
         %w(site pages content_types snippets assets asset_collections).each do |step|
           # Exporter These
           if @options[:enabled][step] != false
@@ -37,72 +36,65 @@ module Locomotive
             self.log "skipping #{step}"
           end
         end
-        
+
         create_database_yaml
         create_zip
         remove_working_folder
-        copy_zip_to_public
-        @zip
       end
-        
+
       def self.run!(site, options = {})
         job = self.new(site, options)
+        job.perform
 
-        if Locomotive.config.delayed_job
-          Delayed::Job.enqueue job, { :site => site, :job_type => 'export' }
-        else
-          job.perform
-        end
+        job
       end
-      
+
+      def exported_theme
+        "#{theme_path}.zip"
+      end
+
       protected
 
-      def themes_folder
-        return @theme_path if defined?(@theme_path)
-        @theme_path = File.join(Rails.root, 'tmp', 'themes', site_name)
+      def theme_path
+        Rails.root.join('tmp', 'themes', site_name)
       end
-      
+
       def site_name
         @site.name.downcase.gsub(" ", "_").to_s
       end
-      
+
       def create_working_folder
         remove_working_folder
         remove_zip
-        
-        FileUtils.mkdir_p(File.join(themes_folder,'public','samples'))
-        FileUtils.mkdir_p(File.join(themes_folder,'snippets'))
-        FileUtils.mkdir_p(File.join(themes_folder,'templates'))
+
+        FileUtils.mkdir_p theme_path.join('public','samples')
+        FileUtils.mkdir_p theme_path.join('snippets')
+        FileUtils.mkdir_p theme_path.join('templates')
       end
 
       def create_zip
-        `cd #{File.join("tmp","themes")}; zip -r #{site_name}.zip #{site_name}`
-        @zip = File.join(themes_folder,'..',"#{site_name}.zip")
+        # TODO: Log output of this somewhere...
+        `zip -r #{exported_theme} #{theme_path}`
       end
 
-      def copy_zip_to_public
-        `cp #{Rails.root.join("tmp","themes",site_name)}.zip #{Rails.root.join('public')}`
-        @zip = "#{site_name}.zip"
+      def database
+        @database ||= { 'site' => {} }
       end
-      
-      def create_database_hash
-        @database = { 'site' => {} }
-      end
-      
+
       def create_database_yaml
-        @file = File.open(File.join(themes_folder, 'database.yml'), 'w+') { |f|
-          YAML.dump(@database, f)
+        @file = File.open(theme_path.join('database.yml'), 'w+') { |f|
+          YAML.dump(database, f)
         }
       end
-      
+
       def remove_working_folder
-        FileUtils.rm_rf themes_folder if File.exists?(themes_folder)
+        FileUtils.rm_rf theme_path if File.exists?(theme_path)
       end
-      
+
       def remove_zip
-        FileUtils.rm_rf File.join(themes_folder, '..', "#{site_name}.zip") if File.exists?(File.join(themes_folder, '..', "#{site_name}.zip"))
+        FileUtils.rm_rf exported_theme if File.exists?(exported_theme)
       end
-      
+
     end
   end
 end
