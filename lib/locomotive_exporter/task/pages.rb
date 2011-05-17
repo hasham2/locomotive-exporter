@@ -67,7 +67,7 @@ module LocomotiveExporter
         template = @page.raw_template.gsub(/\{%\s*editable_(file)\s*'([^\']+)'[^\}]+%\}([^\{%]+)\{%[^\}]+%\}/) do |text|
           editable_area = @page.editable_elements.where(:slug => $2).first
           if editable_area.content.present?
-            download_file(editable_area.content,'samples')
+            copy_file_from_theme editable_area.source.path, 'samples'
           end
 
           "{% editable_#{$1} '#{$2}' %}/samples/#{File.basename(editable_area.content)}{% endeditable_#{$1} %}"

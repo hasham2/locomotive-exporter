@@ -19,7 +19,7 @@ module LocomotiveExporter
       end
 
       def asset_collection_hash
-        return if ignored_collections.include?(@asset_collection.name)
+        return {} if ignored_collections.include?(@asset_collection.name)
 
         attributes = @asset_collection.attributes.to_hash
 

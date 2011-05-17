@@ -13,7 +13,7 @@ module LocomotiveExporter
             directory = FileUtils.mkdir_p(File.join(theme_path,'public',*asset.folder))
             File.open(File.join(directory,File.basename(asset.source.url)),"wb") { |f| f << asset.plain_text }
           else
-            download_file(asset.source.url,asset.folder)
+            copy_file_from_theme asset.source.path, asset.folder
           end
 
           File.unlink(buffer) if File.exists?(buffer)

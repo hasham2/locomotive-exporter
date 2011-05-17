@@ -40,25 +40,27 @@ module LocomotiveExporter
         @options[:site_url]
       end
 
-      def download_file(url,dir)
+      def download_file(url, dir)
         # no longer reference ThemeAssetUploader as there appears to be runtime issues referring to it.
         whitelisted_extensions = %w(jpg jpeg gif png css js swf flv eot svg ttf woff otf ico)
         if url.scan(/^(http[s]?:\/\/)/).present?
           if whitelisted_extensions.include?(File.extname(url).gsub(".",""))
             uri = URI.parse(url)
             open(uri) do |source|
-              directory = FileUtils.mkdir_p(File.join(theme_path,'public',*dir))
-              File.open(File.join(directory,File.basename(url)),'wb') do |result|
+              directory = FileUtils.mkdir_p(theme_path.join('public',*dir))
+              File.open(File.join(directory, File.basename(url)),'wb') do |result|
                 result.write(source.read)
               end
             end
           else
             ::Locomotive::Logger.info "\t [Locomotive Exporter: File `#{url}` was not a valid export]"
           end
-        else
-          directory = FileUtils.mkdir_p(File.join(theme_path,'public',*dir))
-          File.cp(File.join(Rails.root,'public',url),File.join(directory,File.basename(url)))
         end
+      end
+
+      def copy_file_from_theme(path, dir)
+        directory = FileUtils.mkdir_p(theme_path.join('public',*dir))
+        File.cp(path, File.join(directory, File.basename(path)))
       end
 
     end

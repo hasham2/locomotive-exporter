@@ -54,11 +54,17 @@ module LocomotiveExporter
         attributes = []
 
         @content_type.contents.each do |content|
-          attrs = content.aliased_attributes.to_hash.reject{ |k,v| %w(created_at updated_at title).include?(k.to_s) || v.blank? }
-          attrs.each do |k,v|
-            if v.present? && v.to_s.scan(/^(http[s]?:\/\/|\/sites)/).present?
-              download_file(v,"samples/#{@content_type.name}")
-              attrs[k] = %{/samples/#{@content_type.name}/#{File.basename(v)}}
+          attrs = {}
+          content.custom_fields.each do |field|
+            if field.kind == 'file'
+              # Copy file self.send(field._name.to_sym).path
+              file = content.send(field._name.to_sym)
+              path = %{samples/#{@content_type.name}/#{File.basename(file.path)}}
+              copy_file_from_theme file.path, [ 'samples', @content_type.name ]
+
+              attrs[field._alias] = "/#{path}"
+            else
+              attrs[field._alias] = content.send(field._name.to_sym)
             end
           end
           attributes << { content._slug.humanize => attrs }
