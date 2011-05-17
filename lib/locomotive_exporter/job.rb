@@ -80,8 +80,11 @@ module LocomotiveExporter
     end
 
     def create_zip
-      # TODO: Log output of this somewhere...
-      `zip -r #{exported_theme} #{theme_path}`
+      method = "cd #{theme_path.join('../')} && zip -r #{File.basename(exported_theme)} #{File.basename(theme_path)} 2>&1"
+      result = `#{method}`
+      unless $?.exitstatus == 0
+        raise StandardError.new("#{method}\n\n#{result}")
+      end
     end
 
     def database
