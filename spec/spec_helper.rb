@@ -6,6 +6,8 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'ffaker'
 
+require 'locomotive_exporter'
+
 # Require support files
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 

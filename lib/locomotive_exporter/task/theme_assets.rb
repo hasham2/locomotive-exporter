@@ -1,6 +1,6 @@
 module LocomotiveExporter
   module Task
-    class Assets < Base
+    class ThemeAssets < Base
 
       def process
         buffer = "tmp/export_buffer.txt"

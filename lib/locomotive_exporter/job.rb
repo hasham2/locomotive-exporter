@@ -6,7 +6,7 @@ module LocomotiveExporter
     require 'locomotive_exporter/task/pages'
     require 'locomotive_exporter/task/content_types'
     require 'locomotive_exporter/task/snippets'
-    require 'locomotive_exporter/task/assets'
+    require 'locomotive_exporter/task/theme_assets'
     require 'locomotive_exporter/task/asset_collections'
 
     include LocomotiveExporter::Logger
@@ -34,7 +34,7 @@ module LocomotiveExporter
         :worker     => @worker
       }
 
-      %w(site pages content_types snippets assets asset_collections).each do |step|
+      %w(site pages content_types snippets theme_assets asset_collections).each do |step|
         # Exporter These
         if @options[:enabled][step] != false
           self.log("*** Actioning: #{step} ***")

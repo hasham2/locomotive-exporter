@@ -57,12 +57,13 @@ module LocomotiveExporter
           attrs = {}
           content.custom_fields.each do |field|
             if field.kind == 'file'
-              # Copy file self.send(field._name.to_sym).path
               file = content.send(field._name.to_sym)
-              path = %{samples/#{@content_type.name}/#{File.basename(file.path)}}
-              copy_file_from_theme file.path, [ 'samples', @content_type.name ]
+              if file.present?
+                path = %{samples/#{@content_type.name}/#{File.basename(file.path)}}
+                copy_file_from_theme file.path, [ 'samples', @content_type.name ]
 
-              attrs[field._alias] = "/#{path}"
+                attrs[field._alias] = "/#{path}"
+              end
             else
               attrs[field._alias] = content.send(field._name.to_sym)
             end
