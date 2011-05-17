@@ -55,19 +55,28 @@ module LocomotiveExporter
 
         @content_type.contents.each do |content|
           attrs = {}
-          content.custom_fields.each do |field|
-            if field.kind == 'file'
-              file = content.send(field._name.to_sym)
-              if file.present?
-                path = %{samples/#{@content_type.name}/#{File.basename(file.path)}}
-                copy_file_from_theme file.path, [ 'samples', @content_type.name ]
 
-                attrs[field._alias] = "/#{path}"
+          content.custom_fields.each do |field|
+            source = content.send(field._name.to_sym)
+
+            if field.kind == 'file'
+              if source.present?
+                path = %{samples/#{@content_type.name}/#{File.basename(source.path)}}
+                copy_file_from_theme source.path, [ 'samples', @content_type.name ]
+
+                value = "/#{path}"
               end
+            elsif field.kind == 'date'
+              # Force the date to look like a string in the YAML export
+              # so that the importer imports as a string, not a date.
+              value = "!str #{source.to_date}"
             else
-              attrs[field._alias] = content.send(field._name.to_sym)
+              value = source
             end
+
+            attrs[field._alias] = value
           end
+
           attributes << { content._slug.humanize => attrs }
         end
 
