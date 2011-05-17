@@ -1,11 +1,11 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require "locomotive/exporter/version"
+require "locomotive_exporter/version"
 
 Gem::Specification.new do |s|
   s.name        = "locomotive_exporter"
-  s.version     = Locomotive::Exporter::VERSION
+  s.version     = LocomotiveExporter::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Keith Pitt", "Steven Webb", "Mario Visic", "Dirk Kelly", "Tony Issakov"]
   s.email       = ["support@thefrontiergroup.com.au"]
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
                         "{config}/**/*",
                         "{lib}/**/*" ]
 
-  s.require_path = 'lib'
+  s.require_paths = [ 'lib' ]
 
   s.extra_rdoc_files = [ "README.md" ]
 

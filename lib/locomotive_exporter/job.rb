@@ -1,6 +1,14 @@
 module LocomotiveExporter
   class Job
 
+    require 'locomotive_exporter/task/base'
+    require 'locomotive_exporter/task/site'
+    require 'locomotive_exporter/task/pages'
+    require 'locomotive_exporter/task/content_types'
+    require 'locomotive_exporter/task/snippets'
+    require 'locomotive_exporter/task/assets'
+    require 'locomotive_exporter/task/asset_collections'
+
     include LocomotiveExporter::Logger
 
     def initialize(site, options = {})
