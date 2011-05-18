@@ -64,17 +64,16 @@ module LocomotiveExporter
                 path = %{samples/#{@content_type.name}/#{File.basename(source.path)}}
                 copy_file_from_theme source.path, [ 'samples', @content_type.name ]
 
-                value = "/#{path}"
+                attrs[field._alias] = "/#{path}"
               end
             elsif field.kind == 'date'
               # Force the date to look like a string in the YAML export
               # so that the importer imports as a string, not a date.
-              value = "!str #{source.to_date}"
+              attrs[field._alias] = "!str #{source.to_date}"
             else
-              value = source
+              attrs[field._alias] = source
             end
 
-            attrs[field._alias] = value
           end
 
           attributes << { content._slug.humanize => attrs }
