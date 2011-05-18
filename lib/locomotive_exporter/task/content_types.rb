@@ -70,6 +70,16 @@ module LocomotiveExporter
               # Force the date to look like a string in the YAML export
               # so that the importer imports as a string, not a date.
               attrs[field._alias] = "!str #{source.to_date}"
+            elsif field.kind == 'category'
+              #
+              #
+              # TODO:
+              # FIXME: For the moment categories (The select input fields)
+              # are being ignored as the importer is not working correctly with them.
+              # This will need to be fixed once a solution is found.
+              # attrs[field._alias] = content.send(field._alias.to_sym)
+              #
+              #
             else
               attrs[field._alias] = source
             end
