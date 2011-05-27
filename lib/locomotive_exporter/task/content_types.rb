@@ -69,7 +69,7 @@ module LocomotiveExporter
             elsif field.kind == 'date'
               # Force the date to look like a string in the YAML export
               # so that the importer imports as a string, not a date.
-              attrs[field._alias] = "!str #{source.to_date}"
+              attrs[field._alias] = "!str #{source.try(:to_date)}"
             elsif field.kind == 'category'
               #
               #
