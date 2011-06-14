@@ -11,6 +11,7 @@ group :development, :test do
   gem 'rr'
   gem 'factory_girl_rails'
   gem 'rspec_junit_formatter'
+  gem 'fuubar', :require => nil
 
   gem 'ruby-debug',   :require => 'ruby-debug', :platforms => [ :ruby_18 ]
   gem 'ruby-debug19', :require => 'ruby-debug', :platforms => [ :ruby_19 ]
