@@ -10,6 +10,7 @@ group :development, :test do
   gem 'autotest'
   gem 'rr'
   gem 'factory_girl_rails'
+  gem 'rspec_junit_formatter'
 
   gem 'ruby-debug',   :require => 'ruby-debug', :platforms => [ :ruby_18 ]
   gem 'ruby-debug19', :require => 'ruby-debug', :platforms => [ :ruby_19 ]
