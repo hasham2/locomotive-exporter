@@ -81,6 +81,8 @@ GEM
       highline (>= 1.6.1)
       json (>= 1.4.6)
       rest-client (>= 1.6.1)
+    ci_reporter (1.6.4)
+      builder (>= 2.1.2)
     closure-compiler (1.1.1)
     columnize (0.3.2)
     configuration (1.2.0)
@@ -257,6 +259,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   autotest
+  ci_reporter
   factory_girl_rails
   ffaker
   fuubar
