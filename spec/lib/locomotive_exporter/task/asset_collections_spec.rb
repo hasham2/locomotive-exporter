@@ -50,6 +50,7 @@ describe LocomotiveExporter::Task::AssetCollections do
     end
 
     it 'should assign the each field within the hash' do
+      pending "Needs to be looked at after refactoring (if this happends)"
       LocomotiveExporter::Task::AssetCollections.process(@context,@options)
 
       @asset_collection.asset_custom_fields.each do |field|
